@@ -3,3 +3,5 @@
 #Authors: Jacob Heil, Leonora Bittleston
 
 setwd("~/Sagebrush_Results/Ch1/Code/DC_Sagebrush")
+
+#Install and load packages
