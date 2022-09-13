@@ -8,6 +8,10 @@ setwd("~/Sagebrush_Results/Ch1/Code/DC_Sagebrush")
 ##Install and load packages
 if (!require("vegan")) {install.packages("vegan"); require("vegan")}
 if (!require("ggplot2")) {install.packages("ggplot2"); require("ggplot2")}
+if (!require("effects")) {install.packages("effects"); require("effects")}
+if (!require("BiocManager")) {install.packages("BiocManager"); require("BiocManager")}
+#09-13-2022, phyloseq not working on R 4.2.1
+#if (!require("phyloseq")) {BiocManager::install("phyloseq"); require("phyloseq")}
 
 ##Data
 #Community Data
@@ -35,9 +39,7 @@ print(min(rowSums(data_ASV))) #lowest ASV count in ITS data, 4457
 rarecurve(data_ASV, step = 10, label = FALSE, main = "ITS rarefaction")
 abline(v = 4457, col = "red", lwd = 2)
 #Rarefy
-data_ASV.r <- data.frame
-rrarefy(data_ASV, sample = 4457, check.names = FALSE)
-
+data_ASV.r <- data.frame(rrarefy(data_ASV, sample = 4457))
 #Remove any ASVs below desired threshold (default set at 0)
 data_ASV.r <- data_ASV.r[,colSums(data_ASV.r) > 0]
 
@@ -47,4 +49,30 @@ metadata_plant$richness.ITS <- rowSums(data_ASV.r > 0) #richness
 metadata_plant$abundance.ITS <- rowSums(data_ASV.r) #abundance
 metadata_plant$shannon.ITS <- diversity(data_ASV.r) #shannon diversity
 metadata_plant$effective.ITS <- round(exp(metadata_plant$shannon.ITS)) #effective number of species
+
+#Add in offset measurements
+metadata_plant <- cbind(metadata_plant, "R_offset" = as.numeric(c(rep("NA",6), metadata_plant$Richness[1:150])), "A_offset" = as.numeric(c(rep("NA",6),metadata_plant$Abundance[1:150])), "S_offset" = as.numeric(c(rep("NA",6),metadata_plant$Shannon[1:150])))
+
+#GLM Richness
+boxplot(richness.ITS ~ Date, data = metadata_plant)
+richdate_glm <- glm(richness.ITS ~ Date, data = metadata_plant)
+summary(richdate_glm)
+
+boxplot(richness.ITS ~ Date, data = metadata_plant)
+Richness_glm <- glm(richness.ITS ~ R_offset + AirTemperature_C + Precipitation_mm + WindSpeed_m.s + Delta15N + Delta13C, data = metadata_plant, family = "poisson")
+summary(Richness_glm)
+plot(allEffects(Richness_glm))
+
+#GLM diversity
+boxplot(shannon.ITS ~ Date, data = metadata_plant)
+divdate_glm <- glm(shannon.ITS ~ Date, data = metadata_plant)
+summary(divdate_glm)
+
+Shannon_glm <- glm(shannon.ITS ~ R_offset + AirTemperature_C + Precipitation_mm + WindSpeed_m.s + Delta15N + Delta13C, data = metadata_plant)
+summary(Shannon_glm)
+plot(allEffects(Shannon_glm))
+
+##### Beta Diversity Analyses
+#Calculate bray-curtis
+dist.ITS <- vegdist(data_ASV.r, method = "bray")
 
