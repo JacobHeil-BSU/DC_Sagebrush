@@ -19,9 +19,11 @@ data_ASV <- read.csv("~/Sagebrush_Results/Ch1/Data_Community/Data_DCsp_ASV.csv",
 #Metadata
 metadata_plant <- read.csv("~/Sagebrush_Results/Ch1/Data_Meta/Data_DCsp_meta_plant.csv", header = T, row.names = 1, check.names = F)
 #############INSERT TAXONOMY AND ANY OTHER DATA HERE
+#Remove outliers
+metadata_plant <- metadata_plant[! row.names(metadata_plant) %in% c("DC20PD", "DC35PF"),]
 #Clean data
 data_ASV <- subset(data_ASV, row.names(data_ASV) %in% row.names(metadata_plant))
-#The data sets should be 180 observations
+#The data sets should be 178 observations
 
 ##Naming conventions
 #Assign new names to ASVs
@@ -51,14 +53,15 @@ metadata_plant$shannon.ITS <- diversity(data_ASV.r) #shannon diversity
 metadata_plant$effective.ITS <- round(exp(metadata_plant$shannon.ITS)) #effective number of species
 
 #Add in offset measurements
-metadata_plant <- cbind(metadata_plant, "R_offset" = as.numeric(c(rep("NA",6), metadata_plant$Richness[1:150])), "A_offset" = as.numeric(c(rep("NA",6),metadata_plant$Abundance[1:150])), "S_offset" = as.numeric(c(rep("NA",6),metadata_plant$Shannon[1:150])))
+metadata_plant$R_offset <- as.numeric(c(rep("NA",6), metadata_plant$richness.ITS[1:172]))
+metadata_plant$A_offset <- as.numeric(c(rep("NA",6),metadata_plant$abundance.ITS[1:172]))
+metadata_plant$S_offset <- as.numeric(c(rep("NA",6),metadata_plant$shannon.ITS[1:172]))
 
 #GLM Richness
 boxplot(richness.ITS ~ Date, data = metadata_plant)
 richdate_glm <- glm(richness.ITS ~ Date, data = metadata_plant)
 summary(richdate_glm)
 
-boxplot(richness.ITS ~ Date, data = metadata_plant)
 Richness_glm <- glm(richness.ITS ~ R_offset + AirTemperature_C + Precipitation_mm + WindSpeed_m.s + Delta15N + Delta13C, data = metadata_plant, family = "poisson")
 summary(Richness_glm)
 plot(allEffects(Richness_glm))
@@ -75,4 +78,16 @@ plot(allEffects(Shannon_glm))
 ##### Beta Diversity Analyses
 #Calculate bray-curtis
 dist.ITS <- vegdist(data_ASV.r, method = "bray")
+
+#PERMANOVA
+perm <- adonis2(dist.ITS ~ Date + Plant, data = metadata_plant, by = "margin") 
+
+#Mantel
+
+#NMDS
+setseed(578)
+nmds1 <- vegan::metaMDS(dist.ITS, k = 2, trymax=500)
+ordiplot(nmds1, type = "text")
+
+
 
