@@ -11,7 +11,7 @@ if (!require("effects")) {install.packages("effects"); require("effects")}
 if (!require("ggplot2")) {install.packages("ggplot2"); require("ggplot2")}
 if (!require("effects")) {install.packages("effects"); require("effects")}
 if (!require("BiocManager")) {install.packages("BiocManager"); require("BiocManager")}
-#09-13-2022, phyloseq not working on R 4.2.1
+#09-13-2022, phyloseq not working on R 4.2.1 on Windows
 if (!require("phyloseq")) {BiocManager::install("phyloseq"); require("phyloseq")}
 
 ##Data
