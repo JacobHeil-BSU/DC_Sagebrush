@@ -2,7 +2,7 @@
 #Analysis of the microbial communities on sagebrush leaves
 #Authors: Jacob Heil, Leonora Bittleston
 
-##Working Directory
+##Working Directory 
 setwd("~/Sagebrush_Results/Ch1/Code/DC_Sagebrush")
 
 ##Install and load packages
