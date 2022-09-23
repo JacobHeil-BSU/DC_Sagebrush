@@ -317,3 +317,4 @@ meta_ancom <- data.frame("Sample.ID" = row.names(metadata_plant), metadata_plant
 ANCOM.ITS <- ANCOM.main(data_ancom, meta_ancom, F, F, "Date", NULL, NULL, F, NULL, 2, .05, .9)
 
 ANCOM.ITS
+
