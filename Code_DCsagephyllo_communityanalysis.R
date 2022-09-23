@@ -46,7 +46,7 @@ data_ASV.r <- data.frame(rrarefy(data_ASV, sample = 4457))
 #Remove any ASVs below desired threshold (default set at 0)
 data_ASV.r <- data_ASV.r[,colSums(data_ASV.r) > 0]
 
-##Alpha Diversity
+z##Alpha Diversity
 #Calculate alpha diversity, add to metadata
 metadata_plant$richness.ITS <- rowSums(data_ASV.r > 0) #richness
 metadata_plant$abundance.ITS <- rowSums(data_ASV.r) #abundance
@@ -318,3 +318,13 @@ ANCOM.ITS <- ANCOM.main(data_ancom, meta_ancom, F, F, "Date", NULL, NULL, F, NUL
 
 ANCOM.ITS
 
+#Find original ASV names for significant ASVs
+namingconv_ITS[which(namingconv_ITS$New == ANCOM.ITS$W.taxa[1,1]),]  
+namingconv_ITS[which(namingconv_ITS$New == ANCOM.ITS$W.taxa[2,1]),]  
+namingconv_ITS[which(namingconv_ITS$New == ANCOM.ITS$W.taxa[3,1]),]  
+
+ANCOM_plots <- data.frame("Plant" = metadata_plant$Date, "ITS2838" = data_ASV[,ANCOM.ITS$W.taxa[1,1]], "ITS0060" = data_ASV[,ANCOM.ITS$W.taxa[2,1]], "ITS2967" = data_ASV[,ANCOM.ITS$W.taxa[3,1]])
+
+boxplot(ITS2838 ~ Plant, data = ANCOM_plots)
+boxplot(ITS0060~ Plant, data = ANCOM_plots)
+boxplot(ITS2967 ~ Plant, data = ANCOM_plots)
