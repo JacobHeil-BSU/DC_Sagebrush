@@ -15,7 +15,7 @@ if (!require("BiocManager")) {install.packages("BiocManager"); require("BiocMana
 if (!require("phyloseq")) {BiocManager::install("phyloseq"); require("phyloseq")}
 
 ##Data
-#Community Data
+#Community Data 
 data_ASV <- read.csv("~/Sagebrush_Results/Ch1/Data_Community/Data_DCsp_ASV.csv", header = T, row.names = 1, check.names = F)
 #Metadata
 metadata_plant <- read.csv("~/Sagebrush_Results/Ch1/Data_Meta/Data_DCsp_meta_plant.csv", header = T, row.names = 1, check.names = F)
