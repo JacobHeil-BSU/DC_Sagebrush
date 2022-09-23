@@ -59,6 +59,11 @@ metadata_plant$R_offset <- as.numeric(c(rep("NA",6), metadata_plant$richness.ITS
 metadata_plant$A_offset <- as.numeric(c(rep("NA",6),metadata_plant$abundance.ITS[1:172]))
 metadata_plant$S_offset <- as.numeric(c(rep("NA",6),metadata_plant$shannon.ITS[1:172]))
 
+#compare culture and sequence data
+cor.test(metadata_plant$culture_richness, metadata_plant$richness.ITS, method = "pearson")
+plot(culture_richness ~ richness.ITS, data = metadata_plant)
+abline(lm(culture_richness ~ richness.ITS, data = metadata_plant), col = "red")
+
 #GLM Richness
 boxplot(richness.ITS ~ Date, data = metadata_plant)
 richdate_glm <- glm(richness.ITS ~ Date, data = metadata_plant)
