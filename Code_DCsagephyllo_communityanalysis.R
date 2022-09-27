@@ -102,9 +102,25 @@ plot(allEffects(Shannon_glm))
 #Calculate bray-curtis
 dist.ITS <- vegdist(data_ASV.r, method = "bray")
 
+#Beta dispersion
+betadisp_season <- betadisper(dist.ITS, metadata_plant$Season, type = "centroid")
+boxplot(betadisp_season)
+anova(betadisp_season)
+
+betadisp_date <- betadisper(dist.ITS, metadata_plant$Date, type = "centroid")
+boxplot(betadisp_date)
+anova(betadisp_date)
+
+betadisp_plant <- betadisper(dist.ITS, metadata_plant$Plant, type = "centroid")
+boxplot(betadisp_plant)
+anova(betadisp_plant)
+
 #PERMANOVA
-perm <- adonis2(dist.ITS ~ Date + Plant, data = metadata_plant, by = "margin") 
-perm
+perm_date <- adonis2(dist.ITS ~ Date + Plant, data = metadata_plant, by = "margin") 
+perm_date
+
+perm_season <- adonis2(dist.ITS ~ Date + Plant, data = metadata_plant, by = "margin") 
+perm_season
 
 #Mantel
 mant <- mantel(dist.ITS, vegdist(metadata_plant[,"AirTemperature_C"], method="euclidean"), permutations=999)
