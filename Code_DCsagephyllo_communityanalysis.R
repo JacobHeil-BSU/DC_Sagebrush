@@ -105,21 +105,21 @@ dist.ITS <- vegdist(data_ASV.r, method = "bray")
 #Beta dispersion
 betadisp_season <- betadisper(dist.ITS, metadata_plant$Season, type = "centroid")
 boxplot(betadisp_season)
-anova(betadisp_season)
+anova(betadisp_season) #significant
 
 betadisp_date <- betadisper(dist.ITS, metadata_plant$Date, type = "centroid")
 boxplot(betadisp_date)
-anova(betadisp_date)
+anova(betadisp_date) #significant
 
 betadisp_plant <- betadisper(dist.ITS, metadata_plant$Plant, type = "centroid")
 boxplot(betadisp_plant)
-anova(betadisp_plant)
+anova(betadisp_plant) #Plant has the highest variance
 
 #PERMANOVA
 perm_date <- adonis2(dist.ITS ~ Date + Plant, data = metadata_plant, by = "margin") 
 perm_date
 
-perm_season <- adonis2(dist.ITS ~ Date + Plant, data = metadata_plant, by = "margin") 
+perm_season <- adonis2(dist.ITS ~ Season + Plant, data = metadata_plant, by = "margin") 
 perm_season
 
 #Mantel
@@ -142,6 +142,113 @@ p.adjust(mantdf.ITS[2,], method = "holm")
 set.seed(600)
 nmds1 <- vegan::metaMDS(dist.ITS, k = 2, trymax=1000)
 ordiplot(nmds1, type = "text")
+
+###Beta-diversity subsetted by season
+
+#Spring
+data_ASV_spring <- subset(data_ASV.r, metadata_plant$Season %in% "Spring")
+meta_spring <- subset(metadata_plant, metadata_plant$Season %in% "Spring")
+
+dist_spring <- vegdist(data_ASV_spring, method = "bray")
+
+perm_spring <- adonis2(dist_spring ~ Plant, data = meta_spring, by = "margin") 
+perm_spring
+
+factorlist <- colnames(metadata_plant)[c(21:22,27)]
+mantdf_spring <- c()
+for (i in factorlist){
+  #Mantel
+  mant <- mantel(dist_spring, vegdist(meta_spring[[i]], method="euclidean"), permutations=999) 
+  #Generate mantel stat tables for all species entered
+  mantdf_spring[[i]] <- c("Statistic" = mant[["statistic"]],"Significance"=mant[["signif"]])
+}
+mantdf_spring <- data.frame(mantdf_spring)
+mantdf_spring
+p.adjust(mantdf_spring[2,], method = "holm")
+
+#NMDS
+set.seed(600)
+nmds_spring <- vegan::metaMDS(dist_spring, k = 2, trymax=500)
+ordiplot(nmds_spring, type = "text")
+
+#Summer
+data_ASV_Summer <- subset(data_ASV.r, metadata_plant$Season %in% "Summer")
+meta_Summer <- subset(metadata_plant, metadata_plant$Season %in% "Summer")
+
+dist_Summer <- vegdist(data_ASV_Summer, method = "bray")
+
+perm_Summer <- adonis2(dist_Summer ~ Plant, data = meta_Summer, by = "margin") 
+perm_Summer
+
+factorlist <- colnames(metadata_plant)[c(21:22,27)]
+mantdf_Summer <- c()
+for (i in factorlist){
+  #Mantel
+  mant <- mantel(dist_Summer, vegdist(meta_Summer[[i]], method="euclidean"), permutations=999) 
+  #Generate mantel stat tables for all species entered
+  mantdf_Summer[[i]] <- c("Statistic" = mant[["statistic"]],"Significance"=mant[["signif"]])
+}
+mantdf_Summer <- data.frame(mantdf_Summer)
+mantdf_Summer
+p.adjust(mantdf_Summer[2,], method = "holm")
+
+#NMDS
+set.seed(600)
+nmds_Summer <- vegan::metaMDS(dist_Summer, k = 2, trymax=500)
+ordiplot(nmds_Summer, type = "text")
+
+#Fall
+data_ASV_Fall <- subset(data_ASV.r, metadata_plant$Season %in% "Fall")
+meta_Fall <- subset(metadata_plant, metadata_plant$Season %in% "Fall")
+
+dist_Fall <- vegdist(data_ASV_Fall, method = "bray")
+
+perm_Fall <- adonis2(dist_Fall ~ Plant, data = meta_Fall, by = "margin") 
+perm_Fall
+
+factorlist <- colnames(metadata_plant)[c(21:22,27)]
+mantdf_Fall <- c()
+for (i in factorlist){
+  #Mantel
+  mant <- mantel(dist_Fall, vegdist(meta_Fall[[i]], method="euclidean"), permutations=999) 
+  #Generate mantel stat tables for all species entered
+  mantdf_Fall[[i]] <- c("Statistic" = mant[["statistic"]],"Significance"=mant[["signif"]])
+}
+mantdf_Fall <- data.frame(mantdf_Fall)
+mantdf_Fall
+p.adjust(mantdf_Fall[2,], method = "holm")
+
+#NMDS
+set.seed(600)
+nmds_Fall <- vegan::metaMDS(dist_Fall, k = 2, trymax=500)
+ordiplot(nmds_Fall, type = "text")
+
+#Winter
+data_ASV_Winter <- subset(data_ASV.r, metadata_plant$Season %in% "Winter")
+meta_Winter <- subset(metadata_plant, metadata_plant$Season %in% "Winter")
+
+dist_Winter <- vegdist(data_ASV_Winter, method = "bray")
+
+perm_Winter <- adonis2(dist_Winter ~ Plant, data = meta_Winter, by = "margin") 
+perm_Winter
+
+factorlist <- colnames(metadata_plant)[c(21:22,27)]
+mantdf_Winter <- c()
+for (i in factorlist){
+  #Mantel
+  mant <- mantel(dist_Winter, vegdist(meta_Winter[[i]], method="euclidean"), permutations=999) 
+  #Generate mantel stat tables for all species entered
+  mantdf_Winter[[i]] <- c("Statistic" = mant[["statistic"]],"Significance"=mant[["signif"]])
+}
+mantdf_Winter <- data.frame(mantdf_Winter)
+mantdf_Winter
+p.adjust(mantdf_Winter[2,], method = "holm")
+
+#NMDS
+set.seed(600)
+nmds_Winter <- vegan::metaMDS(dist_Winter, k = 2, trymax=500)
+ordiplot(nmds_Winter, type = "text")
+
 
 ## ANCOM ####
 #Detect ASVs playing significant role in driving trends for specified factor
