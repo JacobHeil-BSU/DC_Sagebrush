@@ -104,11 +104,13 @@ dist.ITS <- vegdist(data_ASV.r, method = "bray")
 
 #Beta dispersion
 betadisp_season <- betadisper(dist.ITS, metadata_plant$Season, type = "centroid")
-boxplot(betadisp_season)
+boxplot(betadisp_season, xlab = "")
+## Permutation test for pairwise comparisons
+permutest(bd.cp16s.fluid, pairwise = TRUE, permutations = 99)
 anova(betadisp_season) #significant
 
 betadisp_date <- betadisper(dist.ITS, metadata_plant$Date, type = "centroid")
-boxplot(betadisp_date)
+boxplot(betadisp_date, xlab = "")
 anova(betadisp_date) #significant
 
 betadisp_plant <- betadisper(dist.ITS, metadata_plant$Plant, type = "centroid")
@@ -141,7 +143,19 @@ p.adjust(mantdf.ITS[2,], method = "holm")
 #NMDS
 set.seed(600)
 nmds1 <- vegan::metaMDS(dist.ITS, k = 2, trymax=1000)
-ordiplot(nmds1, type = "text")
+
+#Season
+plot(nmds1$points, xlab="NMDS Axis 1", ylab="NMDS Axis 2", 
+     col = c("green","orange", "brown","blue")[as.factor(metadata_plant$Season)],
+     pch=19, main = "Season")
+ordihull(nmds1$points, groups = metadata_plant$Season, col = c("green","orange", "brown","blue"))
+
+#Plant
+plot(nmds1$points, xlab="NMDS Axis 1", ylab="NMDS Axis 2", 
+     col = rainbow(6)[as.factor(metadata_plant$Plant)],
+     pch=19, main = "Plant")
+ordihull(nmds1$points, groups = metadata_plant$Plant, col = rainbow(6))
+
 
 ###Beta-diversity subsetted by season
 
@@ -150,6 +164,9 @@ data_ASV_spring <- subset(data_ASV.r, metadata_plant$Season %in% "Spring")
 meta_spring <- subset(metadata_plant, metadata_plant$Season %in% "Spring")
 
 dist_spring <- vegdist(data_ASV_spring, method = "bray")
+
+bdisp_spring <- betadisper(dist_spring, meta_spring$Plant, type = "centroid")
+anova(bdisp_spring)
 
 perm_spring <- adonis2(dist_spring ~ Plant, data = meta_spring, by = "margin") 
 perm_spring
@@ -177,6 +194,10 @@ meta_Summer <- subset(metadata_plant, metadata_plant$Season %in% "Summer")
 
 dist_Summer <- vegdist(data_ASV_Summer, method = "bray")
 
+bdisp_Summer <- betadisper(dist_Summer, meta_Summer$Plant, type = "centroid")
+anova(bdisp_Summer)
+boxplot(bdisp_Summer)
+
 perm_Summer <- adonis2(dist_Summer ~ Plant, data = meta_Summer, by = "margin") 
 perm_Summer
 
@@ -194,14 +215,30 @@ p.adjust(mantdf_Summer[2,], method = "holm")
 
 #NMDS
 set.seed(600)
-nmds_Summer <- vegan::metaMDS(dist_Summer, k = 2, trymax=500)
-ordiplot(nmds_Summer, type = "text")
+nmds_Summer <- vegan::metaMDS(dist_Summer, k = 3, trymax=1000)
+plot(nmds_Summer$points[,1:2], xlab="NMDS Axis 1", ylab="NMDS Axis 2", 
+     col = rainbow(6)[as.factor(meta_Summer$Plant)],
+     pch=19, main = "Plant")
+ordihull(nmds_Summer$points[,1:2], groups=meta_Summer$Plant, col = rainbow(6))
+
+plot(nmds_Summer$points[,2:3], xlab="NMDS Axis 2", ylab="NMDS Axis 3", 
+     col = rainbow(6)[as.factor(meta_Summer$Plant)],
+     pch=19, main = "Plant")
+ordihull(nmds_Summer$points[,2:3], groups=meta_Summer$Plan, col = rainbow(6))
+
+plot(nmds_Summer$points[,c(1,3)], xlab="NMDS Axis 1", ylab="NMDS Axis 3", 
+     col = rainbow(6)[as.factor(meta_Summer$Plant)],
+     pch=19, main = "Plant")
+ordihull(nmds_Summer$points[,c(1,3)], groups=meta_Summer$Plan, col = rainbow(6))
 
 #Fall
 data_ASV_Fall <- subset(data_ASV.r, metadata_plant$Season %in% "Fall")
 meta_Fall <- subset(metadata_plant, metadata_plant$Season %in% "Fall")
 
 dist_Fall <- vegdist(data_ASV_Fall, method = "bray")
+
+bdisp_Fall <- betadisper(dist_Fall, meta_Fall$Plant, type = "centroid")
+anova(bdisp_Fall)
 
 perm_Fall <- adonis2(dist_Fall ~ Plant, data = meta_Fall, by = "margin") 
 perm_Fall
@@ -229,6 +266,9 @@ meta_Winter <- subset(metadata_plant, metadata_plant$Season %in% "Winter")
 
 dist_Winter <- vegdist(data_ASV_Winter, method = "bray")
 
+bdisp_Winter <- betadisper(dist_Winter, meta_Winter$Plant, type = "centroid")
+anova(bdisp_Winter)
+
 perm_Winter <- adonis2(dist_Winter ~ Plant, data = meta_Winter, by = "margin") 
 perm_Winter
 
@@ -249,6 +289,10 @@ set.seed(600)
 nmds_Winter <- vegan::metaMDS(dist_Winter, k = 2, trymax=500)
 ordiplot(nmds_Winter, type = "text")
 
+plot(nmds_Winter$points, xlab="NMDS Axis 1", ylab="NMDS Axis 3", 
+     col = rainbow(6)[as.factor(meta_Winter$Plant)],
+     pch=19, main = "Plant")
+ordispider(nmds_Winter$points, groups=meta_Winter$Plant, col = rainbow(6))
 
 ## ANCOM ####
 #Detect ASVs playing significant role in driving trends for specified factor
