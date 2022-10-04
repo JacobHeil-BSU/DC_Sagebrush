@@ -106,15 +106,17 @@ dist.ITS <- vegdist(data_ASV.r, method = "bray")
 betadisp_season <- betadisper(dist.ITS, metadata_plant$Season, type = "centroid")
 boxplot(betadisp_season, xlab = "")
 ## Permutation test for pairwise comparisons
-permutest(bd.cp16s.fluid, pairwise = TRUE, permutations = 99)
+permutest(betadisp_season, pairwise = TRUE, permutations = 99)
 anova(betadisp_season) #significant
 
 betadisp_date <- betadisper(dist.ITS, metadata_plant$Date, type = "centroid")
 boxplot(betadisp_date, xlab = "")
+permutest(betadisp_date, pairwise = TRUE, permutations = 99)
 anova(betadisp_date) #significant
 
 betadisp_plant <- betadisper(dist.ITS, metadata_plant$Plant, type = "centroid")
 boxplot(betadisp_plant)
+permutest(betadisp_plant, pairwise = TRUE, permutations = 99)
 anova(betadisp_plant) #Plant has the highest variance
 
 #PERMANOVA
@@ -168,6 +170,8 @@ dist_spring <- vegdist(data_ASV_spring, method = "bray")
 bdisp_spring <- betadisper(dist_spring, meta_spring$Plant, type = "centroid")
 anova(bdisp_spring)
 
+permutest(bdisp_spring, pairwise = TRUE, permutations = 99)
+
 perm_spring <- adonis2(dist_spring ~ Plant, data = meta_spring, by = "margin") 
 perm_spring
 
@@ -197,6 +201,8 @@ dist_Summer <- vegdist(data_ASV_Summer, method = "bray")
 bdisp_Summer <- betadisper(dist_Summer, meta_Summer$Plant, type = "centroid")
 anova(bdisp_Summer)
 boxplot(bdisp_Summer)
+
+permutest(bdisp_Summer, pairwise = TRUE, permutations = 99)
 
 perm_Summer <- adonis2(dist_Summer ~ Plant, data = meta_Summer, by = "margin") 
 perm_Summer
@@ -238,6 +244,9 @@ meta_Fall <- subset(metadata_plant, metadata_plant$Season %in% "Fall")
 dist_Fall <- vegdist(data_ASV_Fall, method = "bray")
 
 bdisp_Fall <- betadisper(dist_Fall, meta_Fall$Plant, type = "centroid")
+
+permutest(bdisp_Fall, pairwise = TRUE, permutations = 99)
+
 anova(bdisp_Fall)
 
 perm_Fall <- adonis2(dist_Fall ~ Plant, data = meta_Fall, by = "margin") 
@@ -267,6 +276,9 @@ meta_Winter <- subset(metadata_plant, metadata_plant$Season %in% "Winter")
 dist_Winter <- vegdist(data_ASV_Winter, method = "bray")
 
 bdisp_Winter <- betadisper(dist_Winter, meta_Winter$Plant, type = "centroid")
+
+permutest(bdisp_Winter, pairwise = TRUE, permutations = 99)
+
 anova(bdisp_Winter)
 
 perm_Winter <- adonis2(dist_Winter ~ Plant, data = meta_Winter, by = "margin") 
