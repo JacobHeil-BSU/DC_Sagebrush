@@ -1,4 +1,3 @@
-# DC_Sagebrush
-Code for the Dry Creek sagebrush phyllosphere project.
-The data for this project was collected at the Lower Weather Station along Dry Creek in foothills of Boise, Idaho.
-First commit from Rstudio - 09/08/2022
+#Weather and leaf age separately contribute to temporal shifts in phyllosphere community structure and composition
+Code for the original research article: Weather and leaf age separately contribute to temporal shifts in phyllosphere community structure and composition
+Primary author: Jacob A. Heil
